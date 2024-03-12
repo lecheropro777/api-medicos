@@ -7,12 +7,12 @@ import { UpdateMedicoDto } from './dto/updateMedico.dto';
 import { RisDataSource } from 'src/data-source/ris-data-source';
 
 @Injectable()
-export class MedicosReferentesService extends RisDataSource {
+export class MedicosReferentesService {
   constructor(
     @InjectRepository(Medico) private medicoRepository: Repository<Medico>,
     private risDataSource:DataSource
   ) {
-    super();
+    
   }
 
   async getMedicosReferentes(): Promise<Medico[]> {
