@@ -1,8 +1,10 @@
-import { HttpCode, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Medico } from './models/medicos-referentes.entity';
-import { CrearMedicoDto } from './dto/medico.dto';
+import { CrearMedicoDto } from './dto/createMedico.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { UpdateMedicoDto } from './dto/updateMedico.dto';
+import { ok } from 'assert';
 
 @Injectable()
 export class MedicosReferentesService {
@@ -35,11 +37,40 @@ export class MedicosReferentesService {
     throw new NotFoundException('no encontrado');
   }
 
-  postMedicoReferente(medico: CrearMedicoDto) {
+  async postMedicoReferente(medico: CrearMedicoDto): Promise<CrearMedicoDto> {
+    const guardarMedico = await this.medicoRepository.save(medico);
+    console.log(guardarMedico);
     return medico;
   }
 
-  putMedicoReferente(id: number, medico: CrearMedicoDto) {
-    return medico;
+  async putMedicoReferente(
+    id: number,
+    medico: UpdateMedicoDto,
+  ): Promise<Medico> {
+    const encontrarMedico = await this.medicoRepository.findOneBy({ id });
+    if (!encontrarMedico) {
+      throw new NotFoundException('No encontrado');
+    }
+    const resultadoActualizacion = await this.medicoRepository.update(
+      id,
+      medico,
+    );
+    if (resultadoActualizacion.affected > 0) {
+      const medicoActualizado = await this.medicoRepository.findOneBy({ id });
+      if (medicoActualizado) {
+        return medicoActualizado;
+      }
+      throw new NotFoundException('No encontrado');
+    }
+  }
+
+  async deleteMedicoReferente(id: number) {
+    const encontrarMedico = await this.medicoRepository.findOneBy({ id });
+    console.log(encontrarMedico)
+    if (!encontrarMedico) {
+      throw new NotFoundException('No encontrado');
+    }
+    this.medicoRepository.delete({ id });
+    return;
   }
 }

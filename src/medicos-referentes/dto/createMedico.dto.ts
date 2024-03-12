@@ -1,4 +1,4 @@
-import { IsDateString, IsDecimal, IsEmail, IsString } from 'class-validator';
+import { IsDateString, IsInt, IsString } from 'class-validator';
 
 export class CrearMedicoDto {
   @IsString()
@@ -15,7 +15,7 @@ export class CrearMedicoDto {
   direccion: string;
   @IsDateString()
   fecha_nacimiento: Date;
-  @IsDecimal()
+  @IsInt()
   sexo: number;
   @IsString()
   cedula_federal: string;

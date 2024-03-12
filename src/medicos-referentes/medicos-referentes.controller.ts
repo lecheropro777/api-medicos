@@ -1,15 +1,25 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { Medico } from './models/medicos-referentes.entity';
 import { MedicosReferentesService } from './medicos-referentes.service';
-import { CrearMedicoDto } from './dto/medico.dto';
+import { CrearMedicoDto } from './dto/createMedico.dto';
 import { ok } from 'assert';
+import { UpdateMedicoDto } from './dto/updateMedico.dto';
 
 @Controller('medicos-referentes')
 export class MedicosReferentesController {
   constructor(private medicosReferentesService: MedicosReferentesService) {}
 
   @Get()
-  async getMedicosReferentes(){
+  async getMedicosReferentes() {
     return await this.medicosReferentesService.getMedicosReferentes();
   }
 
@@ -20,12 +30,19 @@ export class MedicosReferentesController {
 
   @Post()
   postMedicoReferente(@Body() medico: CrearMedicoDto) {
-    this.medicosReferentesService.postMedicoReferente(medico);
-    return ok;
+    return ok(this.medicosReferentesService.postMedicoReferente(medico));
   }
 
   @Put(':id')
-  putMedicoReferente(@Param() id: number, @Body() medico: Medico) {
+  putMedicoReferente(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() medico: UpdateMedicoDto,
+  ) {
     return this.medicosReferentesService.putMedicoReferente(id, medico);
+  }
+
+  @Delete(':id')
+  deleteMedioReferente(@Param('id', ParseIntPipe) id: number) {
+    return this.medicosReferentesService.deleteMedicoReferente(id);
   }
 }
