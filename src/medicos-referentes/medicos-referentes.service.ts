@@ -4,7 +4,7 @@ import { CrearMedicoDto } from './dto/createMedico.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UpdateMedicoDto } from './dto/updateMedico.dto';
-import { ok } from 'assert';
+import { AppDataSource } from 'src/data-source/ris-data-source';
 
 @Injectable()
 export class MedicosReferentesService {
@@ -13,6 +13,10 @@ export class MedicosReferentesService {
   ) {}
 
   async getMedicosReferentes(): Promise<Medico[]> {
+    const risRepository = AppDataSource.getRepository(Medico);
+    const medicosOtraDataBase = await risRepository.findOneBy({id:332});
+    console.log(medicosOtraDataBase);
+
     const correoDiagnocons = /diagnocons/;
     let listaLimpia = [];
     let listaMedicos: Medico[];
@@ -38,9 +42,12 @@ export class MedicosReferentesService {
   }
 
   async postMedicoReferente(medico: CrearMedicoDto): Promise<CrearMedicoDto> {
+    // const query = await this.medicoRepository.createQueryBuilder('medico')
+    // await query.where(`medico.nombres Like :nombres`,{nombres:`%${medico.nombres}`})
+    // const similares=await query.getMany()
+    // console.log(similares)
     const guardarMedico = await this.medicoRepository.save(medico);
-    console.log(guardarMedico);
-    return medico;
+    return;
   }
 
   async putMedicoReferente(
@@ -66,7 +73,7 @@ export class MedicosReferentesService {
 
   async deleteMedicoReferente(id: number) {
     const encontrarMedico = await this.medicoRepository.findOneBy({ id });
-    console.log(encontrarMedico)
+    console.log(encontrarMedico);
     if (!encontrarMedico) {
       throw new NotFoundException('No encontrado');
     }
