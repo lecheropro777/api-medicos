@@ -2,19 +2,22 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Medico } from './models/medicos-referentes.entity';
 import { CrearMedicoDto } from './dto/createMedico.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { UpdateMedicoDto } from './dto/updateMedico.dto';
-import { AppDataSource } from 'src/data-source/ris-data-source';
+import { RisDataSource } from 'src/data-source/ris-data-source';
 
 @Injectable()
-export class MedicosReferentesService {
+export class MedicosReferentesService extends RisDataSource {
   constructor(
     @InjectRepository(Medico) private medicoRepository: Repository<Medico>,
-  ) {}
+    private risDataSource:DataSource
+  ) {
+    super();
+  }
 
   async getMedicosReferentes(): Promise<Medico[]> {
-    const risRepository = AppDataSource.getRepository(Medico);
-    const medicosOtraDataBase = await risRepository.findOneBy({id:332});
+    const risRepository = this.risDataSource.getRepository(Medico);
+    const medicosOtraDataBase = await risRepository.findOneBy({ id: 331 });
     console.log(medicosOtraDataBase);
 
     const correoDiagnocons = /diagnocons/;

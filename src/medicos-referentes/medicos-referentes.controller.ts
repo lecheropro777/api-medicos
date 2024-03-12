@@ -8,7 +8,6 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { Medico } from './models/medicos-referentes.entity';
 import { MedicosReferentesService } from './medicos-referentes.service';
 import { CrearMedicoDto } from './dto/createMedico.dto';
 import { ok } from 'assert';
