@@ -5,30 +5,36 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { UpdateMedicoDto } from './dto/updateMedico.dto';
 import { IMedicosReferentes } from './medicos-referentes.interface';
+import { RisDataSource } from 'src/dataSources/ris.dataSource';
 
 @Injectable()
-export class MedicosReferentesService implements IMedicosReferentes {
+export class MedicosReferentesService extends RisDataSource implements IMedicosReferentes  {
   constructor(
     @InjectRepository(Medico) private medicoRepository: Repository<Medico>,
     private RisDataSource: DataSource,
-  ) {}
+  ) {
+    super()
+  }
 
   correoDiagnocons = /diagnocons/;
   risDataSource = this.RisDataSource.getRepository(Medico);
 
   async getMedicosReferentes(): Promise<Medico[]> {
-    const buscarEnElRis = this.risDataSource.find();
-    let listaLimpia = [];
+    let medicosDelRis = await this.risDataSource.find();
+
     let listaMedicos: Medico[];
     listaMedicos = await this.medicoRepository.find();
-    let listaTotal: Medico[];
+    let listaTotal: Medico[] = [];
+    console.log(medicosDelRis)
+    let todosLosMedicos = [...medicosDelRis];
 
-    for (let medico of listaTotal) {
+    for (let medico of todosLosMedicos) {
       if (medico.correo && !this.correoDiagnocons.test(medico.correo)) {
-        listaLimpia.push(medico);
+        listaTotal.push(medico);
       }
     }
-    return listaLimpia;
+
+    return listaTotal;
   }
 
   async getMedcioReferenteById(id: number): Promise<Medico> {

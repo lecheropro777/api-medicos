@@ -36,4 +36,8 @@ export class Medico {
   es_local: boolean;
   @Column()
   usuario: string;
+  @Column()
+  empresa:string;
+  @Column()
+  foto:string;
 }
